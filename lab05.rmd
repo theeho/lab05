@@ -1,0 +1,57 @@
+---
+title: "lab05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+library(stringr)
+library(knitr)
+library(skimr)
+library(broom)
+```
+
+```{r}
+airbnb <- read_csv("listings.csv")
+```
+
+```{r}
+
+cleaning_fee <- transform(airbnb, fee = price * .02)
+cplot<- ggplot(cleaning_fee, aes(x=fee)) + geom_histogram() + labs(title = "cleaning fees", x = "price of fee USD", y = "number of observations")
+cplot
+
+summary(cleaning_fee)
+```
+
+```{r}
+
+np <- ggplot(airbnb, aes(x=neighbourhood)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
+np
+
+```
+```{r}
+c <- airbnb %>% count(neighbourhood)
+c
+
+
+```
+
+```{r}
+neigh_simp <- airbnb %>% 
+  mutate(neighbourhood = fct_lump(neighbourhood, n = 3, other_level = "Other")) 
+
+np_s <- ggplot(neigh_simp, aes(x=neighbourhood)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
+np_s
+cs <- neigh_simp %>% count(neighbourhood)
+cs
+```
+```{r}
+cm <- neigh_simp %>% count(minimum_nights)
+cm
+
+```
+

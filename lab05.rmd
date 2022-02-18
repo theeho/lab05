@@ -22,8 +22,9 @@ airbnb <- read_csv("listings.csv")
 
 cleaning_fee <- transform(airbnb, fee = price * .02)
 cplot<- ggplot(cleaning_fee, aes(x=fee)) + geom_histogram() + labs(title = "cleaning fees", x = "price of fee USD", y = "number of observations")
+pplot<- ggplot(cleaning_fee, aes(x=price)) + geom_histogram() + labs(title = "price", x = "price of per night USD", y = "number of observations")
 cplot
-
+pplot
 summary(cleaning_fee)
 ```
 
@@ -41,17 +42,52 @@ c
 ```
 
 ```{r}
-neigh_simp <- airbnb %>% 
+neigh_simp2 <- 
+```
+
+
+
+
+
+
+```{r}
+neigh_simp_df <- airbnb %>% 
   mutate(neighbourhood = fct_lump(neighbourhood, n = 3, other_level = "Other")) 
 
-np_s <- ggplot(neigh_simp, aes(x=neighbourhood)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
+np_s <- ggplot(neigh_simp_df, aes(x=neigh_simp)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
 np_s
 cs <- neigh_simp %>% count(neighbourhood)
 cs
 ```
+
 ```{r}
 cm <- neigh_simp %>% count(minimum_nights)
 cm
 
 ```
+```{r}
+fm <- neigh_simp %>% filter(minimum_nights <= 3) 
+three_n <- transform(fm, price_three_nights = .02 * price + (price * 3))
+np_tn <- ggplot(three_n, aes(x=price_three_nights)) + geom_histogram() + labs(title = "neighborhood counts", x = "price for three nights", y = "number of observations") 
+np_tn
+summary(three_n)
+```
+
+```{r}
+m1 <- lm(price_three_nights~neighbourhood + number_of_reviews + reviews_per_month, data = three_n)
+tidy(m1, conf.int = 95) %>% kable(format = "markdown", digits = 3)
+```
+
+1475.380 - 10*.437 - 85*5.14
+
+
+
+
+
+
+
+
+
+
+
 

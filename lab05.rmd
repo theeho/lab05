@@ -1,6 +1,6 @@
 ---
 title: "lab05"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +17,7 @@ library(broom)
 ```{r}
 airbnb <- read_csv("listings.csv")
 ```
-
+Exercise 1/2
 ```{r}
 
 cleaning_fee <- transform(airbnb, fee = price * .02)
@@ -27,6 +27,7 @@ cplot
 pplot
 summary(cleaning_fee)
 ```
+Exercise 3
 
 ```{r}
 
@@ -40,54 +41,68 @@ c
 
 
 ```
-
-```{r}
-neigh_simp2 <- 
-```
+There are 5 different categories of neighbourhood. 
 
 
+Capitola, unicorperated areas, and Santa Cruz are the most common. They make up 97% of the population. 
 
 
+
+
+
+Exercise 4: 
 
 
 ```{r}
 neigh_simp_df <- airbnb %>% 
   mutate(neighbourhood = fct_lump(neighbourhood, n = 3, other_level = "Other")) 
 
-np_s <- ggplot(neigh_simp_df, aes(x=neigh_simp)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
+np_s <- ggplot(neigh_simp_df, aes(x=neighbourhood)) + geom_bar() + labs(title = "neighborhood counts", x = "neighborhood", y = "number of observations") 
 np_s
-cs <- neigh_simp %>% count(neighbourhood)
+cs <- neigh_simp_df %>% count(neighbourhood)
 cs
 ```
-
+Exercise 5:
 ```{r}
-cm <- neigh_simp %>% count(minimum_nights)
+cm <- neigh_simp_df %>% count(minimum_nights)
 cm
 
 ```
+The 4 most common minimum nights are 1,2,3 and 4 nights. 1 minimum night stands out because it a minimum of 1 night implies that there can be less than 1 night. The intended purpose of this value is likely listings without a minimum. 
+
+Exercise 6
 ```{r}
-fm <- neigh_simp %>% filter(minimum_nights <= 3) 
+fm <- neigh_simp_df %>% filter(minimum_nights <= 3) 
 three_n <- transform(fm, price_three_nights = .02 * price + (price * 3))
 np_tn <- ggplot(three_n, aes(x=price_three_nights)) + geom_histogram() + labs(title = "neighborhood counts", x = "price for three nights", y = "number of observations") 
 np_tn
 summary(three_n)
 ```
+Exercise 7: 
 
 ```{r}
 m1 <- lm(price_three_nights~neighbourhood + number_of_reviews + reviews_per_month, data = three_n)
 tidy(m1, conf.int = 95) %>% kable(format = "markdown", digits = 3)
 ```
 
-1475.380 - 10*.437 - 85*5.14
+Exercise 8: 
+Every 1 increase in number_of_reviews results in a .437 USD decrease in price. We are 95% confident the true paramater is between -.834 and -0.04 
+
+Exercise 9: 
+If the neighbourhood of the listing is in Santa Cruz, then our price of the listing for 3 nights would be 208.001 USD less than the price if the listing was in Scotts Valley. 
+We are 95% confident the true paramater is between -356.966	-59.036.
+
+
+Exercise 10:
+The intercept has meaningful interpretation. It estimates the price for 3 nights for a listing in Scotts Valley with no reviews. This is a valid case. 
 
 
 
+Exercise 11: 
+Estimated price for 3 nights = 1457.38 + 10(-0.437) + 5.14(-85.171) = 1015.23106 USD
 
+Exercise 12: 
 
-
-
-
-
-
+I think there are a few concerning things about our asumptions. It seems that the number of reviews, and the reviews per month would be dependent on eachother. A higher number of reviews per month will always result in a higher number of total reviews. Also, the p-value for number_of_reviews is much higher than the others. I think it can be assumed that all observations would be independent of eachother given that the price of one listing will not directly affect the price of another. Based on these assumptions I would be cautious when using this model.
 
 

@@ -2,7 +2,10 @@
 title: "lab05"
 output: pdf_document
 ---
+  
+REPO: https://github.com/theeho/lab05
 
+ 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
